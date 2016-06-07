@@ -4,6 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var fontnik = require('fontnik');
 var d3 = require('d3-queue');
+var zlib = require('zlib');
 
     try {
         var fname = process.argv[2];
@@ -13,12 +14,12 @@ var d3 = require('d3-queue');
 
 	var rex = /([A-Z])([A-Z])([a-z])|([a-z])([A-Z])/g;
         var folder = path.basename(fname).slice(0, -4).replace('-','').replace(rex, '$1$4 $2$3$5');
-        if (process.argv[3]) { 
+        if (process.argv[3]) {
             if (fs.existsSync(process.argv[3])) {
                 folder = path.join(process.argv[3], folder);
             } else {
                 console.error('Path ' + process.argv[3] + ' does not exist. Using default.');
-            }             
+            }
         }
     } catch (e) {
         console.error('error: could not read font '+e)
@@ -51,7 +52,9 @@ function writeGlyphs(opts, done) {
             console.warn(err.toString());
             process.exit(1);
         }
-        fs.writeFileSync(folder + '/' + opts.start + '-' + opts.end + '.pbf', zdata);
-        done();
+        zlib.gzip(zdata, function (err, binary) {
+            fs.writeFileSync(folder + '/' + opts.start + '-' + opts.end + '.pbf', binary);
+            done();
+        });
     });
 }
