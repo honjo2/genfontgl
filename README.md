@@ -1,6 +1,6 @@
 genfontgl
 -----
-A simple command line tool to generate fonts for Mapbox GL via fontnik without gzipping the result.
+A simple command line tool to generate fonts for Mapbox GL via fontnik.
 
 Usage: ```genfontgl OpenSans-Regular.ttf [output location]```
 
